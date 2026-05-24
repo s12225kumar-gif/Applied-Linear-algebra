@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Algebra — Units 2–5</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #faf7f2;
+    --cream: #f0ebe0;
+    --gold: #c9963a;
+    --rust: #b84c2b;
+    --teal: #1e6b6b;
+    --lavender: #5c4a8a;
+    --highlight: #fff3cd;
+    --border: #d4c9b0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 40px 24px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--rust), var(--teal), var(--lavender));
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 5vw, 38px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  header p {
+    font-size: 13px;
+    opacity: 0.65;
+    font-style: italic;
+    letter-spacing: 1px;
+  }
+
+  nav {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  nav a {
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid currentColor;
+    transition: all 0.2s;
+  }
+  nav a.u2 { color: var(--teal); }
+  nav a.u3 { color: var(--rust); }
+  nav a.u4 { color: var(--lavender); }
+  nav a.u5 { color: var(--gold); }
+  nav a:hover { color: #fff; background: var(--ink); border-color: var(--ink); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 0 20px; }
+
+  .unit {
+    margin-top: 48px;
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .unit-header {
+    padding: 20px 24px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .unit-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 42px;
+    font-weight: 900;
+    line-height: 1;
+    opacity: 0.15;
+  }
+  .unit-title h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .unit-title p {
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+
+  .u2 .unit-header { background: #e8f5f5; border-bottom: 3px solid var(--teal); }
+  .u3 .unit-header { background: #fdf0ec; border-bottom: 3px solid var(--rust); }
+  .u4 .unit-header { background: #f0ecf9; border-bottom: 3px solid var(--lavender); }
+  .u5 .unit-header { background: #fdf6e8; border-bottom: 3px solid var(--gold); }
+
+  .u2 .unit-num { color: var(--teal); }
+  .u3 .unit-num { color: var(--rust); }
+  .u4 .unit-num { color: var(--lavender); }
+  .u5 .unit-num { color: var(--gold); }
+
+  .unit-body { padding: 24px; background: #fff; }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 28px 0 10px;
+    padding-bottom: 4px;
+    border-bottom: 1px dashed var(--border);
+  }
+  h3:first-child { margin-top: 0; }
+
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin: 18px 0 6px;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+
+  p { margin-bottom: 10px; }
+
+  .box {
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 15px;
+  }
+  .def { background: #eaf6f6; border-left: 4px solid var(--teal); }
+  .thm { background: #fdf0ec; border-left: 4px solid var(--rust); }
+  .key { background: var(--highlight); border-left: 4px solid var(--gold); }
+  .eg  { background: #f4f1fb; border-left: 4px solid var(--lavender); }
+  .tip { background: #f0f7ee; border-left: 4px solid #4a9e4a; }
+
+  .box strong { display: block; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.6; margin-bottom: 4px; }
+
+  code, .math {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f0ece4;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 14px;
+  }
+
+  .math-block {
+    font-family: 'JetBrains Mono', monospace;
+    background: #f7f4ef;
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin: 12px 0;
+    font-size: 14px;
+    overflow-x: auto;
+    line-height: 1.8;
+  }
+
+  ul, ol { padding-left: 22px; margin-bottom: 10px; }
+  li { margin-bottom: 5px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  th {
+    background: var(--ink);
+    color: #fff;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+  td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--cream); }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  .tag-exam { background: #ffe0e0; color: #b00; }
+  .tag-imp  { background: #fff0cc; color: #7a5500; }
+
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    padding-left: 0;
+  }
+  .steps li {
+    counter-increment: step;
+    padding-left: 38px;
+    position: relative;
+    margin-bottom: 8px;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0; }
+  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-top: 60px;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Linear Algebra — Units II to V</h1>
+  <p>B.Tech ECE · Complete Study Notes · Exam-Ready</p>
+</header>
+
+<nav>
+  <a href="#u2" class="u2">Unit II: Vector Spaces</a>
+  <a href="#u3" class="u3">Unit III: Linear Transformations</a>
+  <a href="#u4" class="u4">Unit IV: Inner Product Spaces</a>
+  <a href="#u5" class="u5">Unit V: Applications</a>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════════════════
+     UNIT II
+════════════════════════════════════════════════════ -->
+<section class="unit u2" id="u2">
+  <div class="unit-header">
+    <div class="unit-num">II</div>
+    <div class="unit-title">
+      <h2>Vector Spaces and Subspaces</h2>
+      <p>The algebraic foundation of linear algebra</p>
+    </div>
+  </div>
+  <div class="unit-body">
+
+    <h3>1. What is a Vector Space?</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      A <b>Vector Space</b> V over a field F (usually ℝ) is a set of objects (called vectors) with two operations — <b>vector addition</b> and <b>scalar multiplication</b> — that satisfy 10 axioms.
+    </div>
+
+    <h4>The 10 Axioms (must know!)</h4>
+    <p>For all <span class="math">u, v, w ∈ V</span> and scalars <span class="math">c, d ∈ F</span>:</p>
+    <table>
+      <tr><th>#</th><th>Axiom</th><th>What it means</th></tr>
+      <tr><td>A1</td><td>u + v ∈ V</td><td>Closed under addition</td></tr>
+      <tr><td>A2</td><td>u + v = v + u</td><td>Commutative</td></tr>
+      <tr><td>A3</td><td>(u+v)+w = u+(v+w)</td><td>Associative</td></tr>
+      <tr><td>A4</td><td>∃ 0 : v+0=v</td><td>Zero vector exists</td></tr>
+      <tr><td>A5</td><td>∃ -v : v+(-v)=0</td><td>Additive inverse</td></tr>
+      <tr><td>S1</td><td>cv ∈ V</td><td>Closed under scalar mult.</td></tr>
+      <tr><td>S2</td><td>c(u+v)=cu+cv</td><td>Distributive over vector sum</td></tr>
+      <tr><td>S3</td><td>(c+d)v=cv+dv</td><td>Distributive over scalar sum</td></tr>
+      <tr><td>S4</td><td>(cd)v=c(dv)</td><td>Associative scalar mult.</td></tr>
+      <tr><td>S5</td><td>1·v = v</td><td>Identity scalar</td></tr>
+    </table>
+
+    <div class="box eg">
+      <strong>Common Examples</strong>
+      <ul>
+        <li>ℝⁿ (all n-tuples of real numbers) — the most important</li>
+        <li>Mₘₓₙ — set of all m×n matrices</li>
+        <li>Pₙ — set of all polynomials of degree ≤ n</li>
+        <li>{0} — the trivial vector space</li>
+      </ul>
+    </div>
+
+    <h3>2. Subspaces</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      A non-empty subset <b>W ⊆ V</b> is a <b>subspace</b> if it is itself a vector space under the same operations.
+    </div>
+
+    <div class="box key">
+      <strong>⚡ Subspace Test (3 conditions only!)</strong>
+      W is a subspace of V if and only if:
+      <ol>
+        <li><b>Non-empty:</b> W ≠ ∅ (equivalently, 0 ∈ W)</li>
+        <li><b>Closed under addition:</b> u, v ∈ W ⟹ u + v ∈ W</li>
+        <li><b>Closed under scalar multiplication:</b> u ∈ W, c ∈ ℝ ⟹ cu ∈ W</li>
+      </ol>
+    </div>
+
+    <div class="box eg">
+      <strong>Example — Is W = {(x,y) : x + y = 0} a subspace of ℝ²?</strong>
+      <ol>
+        <li>(0,0): 0+0=0 ✓ → non-empty</li>
+        <li>Take (a,-a) and (b,-b): sum = (a+b, -(a+b)) → still satisfies x+y=0 ✓</li>
+        <li>c·(a,-a) = (ca, -ca) → still satisfies x+y=0 ✓</li>
+      </ol>
+      ∴ W is a subspace.
+    </div>
+
+    <h3>3. Linear Independence</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      Vectors <span class="math">v₁, v₂, …, vₖ</span> are <b>linearly independent</b> if the only solution to
+      <span class="math">c₁v₁ + c₂v₂ + … + cₖvₖ = 0</span> is <span class="math">c₁ = c₂ = … = cₖ = 0</span>.
+      Otherwise they are <b>linearly dependent</b>.
+    </div>
+
+    <div class="box tip">
+      <strong>💡 Quick Check Method</strong>
+      Put the vectors as rows (or columns) in a matrix. Row-reduce. If you get a zero row, the vectors are <b>dependent</b>; if no zero row, they are <b>independent</b>.
+    </div>
+
+    <div class="box eg">
+      <strong>Example</strong>
+      Are v₁=(1,2,0), v₂=(0,1,3), v₃=(1,3,3) linearly independent?
+      <div class="math-block">
+Matrix: [1 2 0]     R3 → R3-R1    [1 2 0]
+        [0 1 3]     ──────────→   [0 1 3]
+        [1 3 3]                   [0 1 3]
+
+        R3 → R3-R2 →  [0 0 0]  ← zero row!
+      </div>
+      ∴ Linearly <b>dependent</b> (v₃ = v₁ + v₂).
+    </div>
+
+    <h3>4. Span</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      The <b>span</b> of vectors {v₁,…,vₖ} is the set of ALL linear combinations:
+      <div class="math-block">span{v₁,…,vₖ} = {c₁v₁ + c₂v₂ + … + cₖvₖ : cᵢ ∈ ℝ}</div>
+      Span is always a subspace.
+    </div>
+
+    <h3>5. Basis and Dimension</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      A <b>basis</b> of V is a set of vectors that is:
+      <ol>
+        <li>Linearly <b>independent</b></li>
+        <li><b>Spans</b> V</li>
+      </ol>
+    </div>
+
+    <div class="box def">
+      <strong>Dimension</strong>
+      The <b>dimension</b> of V = number of vectors in any basis of V. Written dim(V).
+    </div>
+
+    <table>
+      <tr><th>Space</th><th>Standard Basis</th><th>Dimension</th></tr>
+      <tr><td>ℝⁿ</td><td>e₁=(1,0,…,0), e₂=(0,1,…,0), … eₙ</td><td>n</td></tr>
+      <tr><td>Mₘₓₙ</td><td>Matrices with single 1, rest 0</td><td>mn</td></tr>
+      <tr><td>Pₙ</td><td>{1, x, x², …, xⁿ}</td><td>n+1</td></tr>
+    </table>
+
+    <h3>6. Row Space, Column Space, Null Space</h3>
+    <p>For an m×n matrix A:</p>
+    <table>
+      <tr><th>Space</th><th>Definition</th><th>How to find basis</th></tr>
+      <tr><td><b>Row Space</b></td><td>Span of rows of A</td><td>Non-zero rows of row-echelon form</td></tr>
+      <tr><td><b>Column Space</b></td><td>Span of columns of A</td><td>Columns of A with pivots in RREF</td></tr>
+      <tr><td><b>Null Space</b></td><td>{x : Ax = 0}</td><td>Solve Ax=0, write solution as span</td></tr>
+    </table>
+
+    <h3>7. Rank and Nullity</h3>
+    <div class="box def">
+      <strong>Definitions</strong>
+      <ul>
+        <li><b>Rank(A)</b> = dim(Column Space) = dim(Row Space) = number of pivots</li>
+        <li><b>Nullity(A)</b> = dim(Null Space) = n − rank(A)</li>
+      </ul>
+    </div>
+    <div class="box thm">
+      <strong>🔑 Rank-Nullity Theorem (VERY IMPORTANT)</strong>
+      For any m×n matrix A:
+      <div class="math-block">rank(A) + nullity(A) = n</div>
+      (where n = number of columns)
+    </div>
+
+    <div class="box eg">
+      <strong>Example</strong>
+      A is 4×6 matrix with rank 3. Find nullity.
+      <br>nullity = 6 − 3 = <b>3</b>
+    </div>
+
+    <h3>8. Wronskian</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      For functions f₁, f₂, …, fₙ, the <b>Wronskian</b> is the determinant:
+      <div class="math-block">
+W(f₁,…,fₙ) = |f₁    f₂    … fₙ  |
+               |f₁'   f₂'   … fₙ' |
+               |  ⋮                |
+               |f₁⁽ⁿ⁻¹⁾ … fₙ⁽ⁿ⁻¹⁾|
+      </div>
+      If W ≠ 0 at some point → functions are <b>linearly independent</b>.
+    </div>
+
+    <div class="box eg">
+      <strong>Example — Are sin x and cos x linearly independent?</strong>
+      <div class="math-block">
+W = |sin x   cos x |
+    |cos x  -sin x |
+  = sin x(-sin x) − cos x(cos x)
+  = -sin²x − cos²x = -1 ≠ 0  ✓  Linearly INDEPENDENT
+      </div>
+    </div>
+
+    <h3>9. Application: Interpolation</h3>
+    <p>Given n+1 data points, we find a polynomial of degree ≤ n passing through them. We write:</p>
+    <div class="math-block">p(x) = a₀ + a₁x + a₂x² + … + aₙxⁿ</div>
+    <p>Substituting each point gives a system Ax = b. Solving this system (using row reduction or matrix inverse) gives the interpolating polynomial. The column space / basis ideas underpin why a unique polynomial exists.</p>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     UNIT III
+════════════════════════════════════════════════════ -->
+<section class="unit u3" id="u3">
+  <div class="unit-header">
+    <div class="unit-num">III</div>
+    <div class="unit-title">
+      <h2>Linear Transformations</h2>
+      <p>Functions that preserve vector space structure</p>
+    </div>
+  </div>
+  <div class="unit-body">
+
+    <h3>1. Definition</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      A function <b>T: V → W</b> (from vector space V to W) is a <b>linear transformation</b> if for all u, v ∈ V and scalar c:
+      <div class="math-block">
+1. T(u + v) = T(u) + T(v)      [Additivity]
+2. T(cu) = cT(u)               [Homogeneity]
+      </div>
+      Combined: <span class="math">T(cu + dv) = cT(u) + dT(v)</span>
+    </div>
+
+    <div class="box key">
+      <strong>⚡ Quick Check</strong>
+      Always verify: T(0) = 0. If T(0) ≠ 0, it's NOT linear!
+    </div>
+
+    <div class="box eg">
+      <strong>Examples of Linear Transformations</strong>
+      <table>
+        <tr><th>Name</th><th>Definition</th><th>Linear?</th></tr>
+        <tr><td>Zero map</td><td>T(v) = 0</td><td>✓ Yes</td></tr>
+        <tr><td>Identity</td><td>T(v) = v</td><td>✓ Yes</td></tr>
+        <tr><td>Scaling</td><td>T(x,y) = (2x, 3y)</td><td>✓ Yes</td></tr>
+        <tr><td>Rotation by θ</td><td>T(x,y) = (x cosθ - y sinθ, x sinθ + y cosθ)</td><td>✓ Yes</td></tr>
+        <tr><td>Translation</td><td>T(v) = v + b (b ≠ 0)</td><td>✗ No (T(0)≠0)</td></tr>
+        <tr><td>T(x)=x²</td><td>—</td><td>✗ No</td></tr>
+      </table>
+    </div>
+
+    <h3>2. Kernel and Range</h3>
+    <div class="box def">
+      <strong>Kernel (Null Space) of T</strong>
+      <div class="math-block">ker(T) = {v ∈ V : T(v) = 0}</div>
+      ker(T) is always a <b>subspace of V</b>.
+    </div>
+
+    <div class="box def">
+      <strong>Range (Image) of T</strong>
+      <div class="math-block">range(T) = {T(v) : v ∈ V} = {w ∈ W : w = T(v) for some v}</div>
+      range(T) is always a <b>subspace of W</b>.
+    </div>
+
+    <div class="box thm">
+      <strong>🔑 Dimension Theorem (Rank-Nullity for T)</strong>
+      <div class="math-block">dim(ker T) + dim(range T) = dim(V)</div>
+      dim(ker T) = nullity,  dim(range T) = rank
+    </div>
+
+    <h3>3. One-to-One and Onto</h3>
+    <table>
+      <tr><th>Property</th><th>Condition</th><th>Equivalent to</th></tr>
+      <tr><td>One-to-One (injective)</td><td>T(u)=T(v) ⟹ u=v</td><td>ker(T) = {0}</td></tr>
+      <tr><td>Onto (surjective)</td><td>range(T) = W</td><td>dim(range T) = dim W</td></tr>
+      <tr><td>Isomorphism (bijective)</td><td>Both 1-1 and onto</td><td>V ≅ W (same structure)</td></tr>
+    </table>
+
+    <h3>4. Invertible Linear Transformations</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      T: V→W is <b>invertible</b> if there exists T⁻¹: W→V such that T⁻¹∘T = Iᵥ and T∘T⁻¹ = Iᵥᵥ.
+    </div>
+    <div class="box thm">
+      <strong>Theorem</strong>
+      T is invertible ⟺ T is one-to-one AND onto ⟺ T is an isomorphism.
+    </div>
+
+    <h3>5. Matrix of a Linear Transformation</h3>
+    <p>Every linear transformation T: ℝⁿ→ℝᵐ corresponds to a unique m×n matrix A such that:</p>
+    <div class="math-block">T(x) = Ax  for all x ∈ ℝⁿ</div>
+
+    <div class="box key">
+      <strong>How to find the matrix A</strong>
+      The j-th column of A is T(eⱼ), where eⱼ is the j-th standard basis vector.
+    </div>
+
+    <div class="box eg">
+      <strong>Example</strong>
+      T: ℝ²→ℝ² defined by T(x,y) = (x+2y, 3x−y). Find matrix A.
+      <div class="math-block">
+T(e₁) = T(1,0) = (1, 3)   → column 1: [1, 3]ᵀ
+T(e₂) = T(0,1) = (2, -1)  → column 2: [2, -1]ᵀ
+
+So A = [1   2]
+       [3  -1]
+
+Check: A[x,y]ᵀ = [x+2y, 3x-y]ᵀ  ✓
+      </div>
+    </div>
+
+    <h3>6. Change of Basis</h3>
+    <p>If B = {b₁,…,bₙ} and C = {c₁,…,cₙ} are two bases of V, the <b>transition matrix</b> P_{B→C} converts coordinates from B to C.</p>
+
+    <div class="math-block">
+[v]_C = P_{B→C} · [v]_B
+
+To find P_{B→C}:
+  Write each basis vector of B in terms of C.
+  Put those coordinate columns into a matrix.
+    </div>
+
+    <h3>7. Similarity</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      Two matrices A and B are <b>similar</b> if there exists an invertible matrix P such that:
+      <div class="math-block">B = P⁻¹AP</div>
+    </div>
+    <p>Similar matrices represent the <b>same linear transformation</b> in different bases. They have the same eigenvalues, determinant, trace, and rank.</p>
+
+    <h3>8. Application: Computer Graphics</h3>
+    <p>Linear transformations directly power 2D/3D graphics. Key transforms:</p>
+    <table>
+      <tr><th>Transform</th><th>Matrix</th></tr>
+      <tr><td>Scale by (sx, sy)</td><td class="math">[sx 0 ; 0 sy]</td></tr>
+      <tr><td>Rotate by θ</td><td class="math">[cosθ -sinθ ; sinθ cosθ]</td></tr>
+      <tr><td>Reflect over x-axis</td><td class="math">[1 0 ; 0 -1]</td></tr>
+      <tr><td>Shear (horizontal)</td><td class="math">[1 k ; 0 1]</td></tr>
+    </table>
+    <p>Composing transformations = multiplying matrices (right to left).</p>
+
+  </div>
+</section>
+
+
+<!-- ══════════════════════════════════════════════════
+     UNIT IV
+════════════════════════════════════════════════════ -->
+<section class="unit u4" id="u4">
+  <div class="unit-header">
+    <div class="unit-num">IV</div>
+    <div class="unit-title">
+      <h2>Inner Product Spaces</h2>
+      <p>Geometry — lengths, angles, and orthogonality</p>
+    </div>
+  </div>
+  <div class="unit-body">
+
+    <h3>1. Inner Product</h3>
+    <div class="box def">
+      <strong>Definition</strong>
+      An <b>inner product</b> on a vector space V is a function ⟨u, v⟩ : V×V → ℝ satisfying:
+      <ol>
+        <li>⟨u, v⟩ = ⟨v, u⟩ &nbsp;&nbsp;&nbsp;&
